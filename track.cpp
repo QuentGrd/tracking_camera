@@ -40,7 +40,8 @@ int main(int, char**){
 
 
     MatIterator_<Vec3b> it, end, mask_it;
-    int color[3] = {0, 0, 255};
+    //int color[3] = {0, 0, 255};
+    int color[3] = {50, 75, 150};
     Point* center = new Point(0, 0);
 
     while(1){

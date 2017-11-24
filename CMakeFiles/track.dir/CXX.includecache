@@ -6,13 +6,13 @@
 
 #IncludeRegexTransform: 
 
-/Users/quentin/Documents/L3/Robotique/Projet/include/serial.h
+/Users/quentin/Documents/L3/Robotique/tracking_camera/include/serial.h
 stdio.h
 -
 stdlib.h
 -
 
-/Users/quentin/Documents/L3/Robotique/Projet/track.cpp
+/Users/quentin/Documents/L3/Robotique/tracking_camera/track.cpp
 opencv2/opencv.hpp
 -
 iostream
@@ -22,7 +22,7 @@ stdio.h
 stdlib.h
 -
 include/serial.h
-/Users/quentin/Documents/L3/Robotique/Projet/include/serial.h
+/Users/quentin/Documents/L3/Robotique/tracking_camera/include/serial.h
 
 /usr/local/include/opencv/cxcore.h
 opencv2/core/core_c.h
