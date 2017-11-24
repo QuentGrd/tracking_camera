@@ -1,7 +1,11 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
+#include <cstdio>
+#include <ctime>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
+#include <string>
 
 extern "C"{
     #include "include/serial.h"
@@ -10,7 +14,8 @@ extern "C"{
 using namespace cv;
 
 #define TOLERANCE 100
-#define RADIUS 20
+#define RADIUS 50
+#define DEBUG 1
 
 int main(int, char**){
 
@@ -28,24 +33,45 @@ int main(int, char**){
     if(!cap.isOpened())  // check if we succeeded
         return -1;
 
-    Mat frame, mask;
+    Mat frame, frame1, mask;
     namedWindow("BazooCam",1);
     namedWindow("ChatRoulette", 1);
     moveWindow("BazooCam", 0, 0);
-    moveWindow("ChatRoulette", 320, 0);
+    moveWindow("ChatRoulette", 640, 0);
 
 
-    cap.set(CV_CAP_PROP_FRAME_WIDTH,320);  //taille de la fenetre
-    cap.set(CV_CAP_PROP_FRAME_HEIGHT,240); //au dela de 320*240
+    cap.set(CV_CAP_PROP_FRAME_WIDTH, 640);  //taille de la fenetre
+    cap.set(CV_CAP_PROP_FRAME_HEIGHT,480); //au dela de 320*240
 
 
     MatIterator_<Vec3b> it, end, mask_it;
-    //int color[3] = {0, 0, 255};
-    int color[3] = {50, 75, 150};
+    int color[3] = {0, 0, 255};
     Point* center = new Point(0, 0);
 
+    //Timer
+    std::clock_t start = std::clock(), currentTimer;
+    double timer = 3;
+    currentTimer = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;
+    while(currentTimer < timer){
+        currentTimer = (std::clock() - start) / (double) CLOCKS_PER_SEC;
+        cap.read(frame1);
+        cv::flip(frame1, frame, 1);
+        putText(frame, std::to_string((int) timer - currentTimer), Point(50, 50), 
+            CV_FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255));
+        circle(frame, Point(320, 240), 50, Scalar(0, 255, 0), 2);
+        imshow("BazooCam", frame);
+        if(waitKey(30) >= 0) break;
+        color[0] = frame.at<Vec3b>(320, 240)[0];
+        color[1] = frame.at<Vec3b>(320, 240)[1];
+        color[2] = frame.at<Vec3b>(320, 240)[2];
+    }
+
+    if (DEBUG)
+        printf("%d, %d, %d\n", color[0], color[1], color[2]);
+
     while(1){
-           if(cap.read(frame)){// get a new frame from camera
+        if(cap.read(frame1)){// get a new frame from camera
+            cv::flip(frame1, frame, 1);
             center->x = frame.cols/2;
             center->y = frame.rows/2;
             mask = frame.clone();
@@ -79,9 +105,9 @@ int main(int, char**){
                 int diff_x = pos_x - center->x, diff_y = pos_y - center->y;
                 printf("x: %d\ty: %d\n", pos_x - center->x, pos_y - center->y);
                 if (diff_x > RADIUS)
-                    bytes_write = serial_simple_write(&tty, 'd');
-                else if(diff_x < -RADIUS)
                     bytes_write = serial_simple_write(&tty, 'q');
+                else if(diff_x < -RADIUS)
+                    bytes_write = serial_simple_write(&tty, 'd');
                 if (diff_y > RADIUS)
                     bytes_write = serial_simple_write(&tty, 's');
                 else if (diff_y < -RADIUS)
