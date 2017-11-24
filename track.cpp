@@ -56,7 +56,7 @@ int main(int, char**){
         currentTimer = (std::clock() - start) / (double) CLOCKS_PER_SEC;
         cap.read(frame1);
         cv::flip(frame1, frame, 1);
-        putText(frame, std::to_string((int) timer - currentTimer), Point(50, 50), 
+        putText(frame, std::to_string((int) timer - currentTimer), Point(50, 50),
             CV_FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 255));
         circle(frame, Point(320, 240), 50, Scalar(0, 255, 0), 2);
         imshow("BazooCam", frame);
@@ -120,10 +120,21 @@ int main(int, char**){
 
             imshow("ChatRoulette", mask);
             imshow("BazooCam", frame);
-        
+
         }
         if(waitKey(30) >= 0) break;
     }
     // the camera will be deinitialized automatically in VideoCapture destructor
     return 0;
+}
+
+void save_data(FILE* file, int diff_x, int diff_y, double tmp){
+
+  if(file != NULL){
+    double dist = sqrt(pow(diff_x, 2) + pow(diff_y, 2));
+    fprintf(file, "%f,%f\n", dist, tmp);
+  }
+  else{
+    printf("ERROR ! Impossible to open data file\n");
+  }
 }
