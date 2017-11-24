@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/quentin/Documents/L3/Robotique/Projet/include/serial.c
+stdio.h
+-
+stdlib.h
+-
+fcntl.h
+-
+unistd.h
+-
+time.h
+-
+serial.h
+/Users/quentin/Documents/L3/Robotique/Projet/include/serial.h
+
+/Users/quentin/Documents/L3/Robotique/Projet/include/serial.h
+stdio.h
+-
+stdlib.h
+-
+
