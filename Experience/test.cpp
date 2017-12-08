@@ -14,7 +14,7 @@ extern "C"{
 using namespace cv;
 
 #define TOLERANCE 100
-#define RADIUS 50
+#define RADIUS 40
 #define DEBUG 1
 
 void save_data(FILE* file, int diff_x, int diff_y, double tmp);
@@ -26,9 +26,9 @@ int main(int, char**){
     serial_com tty;
 
     FILE* file = NULL;
-    file = fopen("experience.txt", "w+");
+    file = fopen("result/xprad40sp4.txt", "w+");
 
-    std::string desc = "/dev/cu.usbmodem1421";
+    std::string desc = "/dev/cu.usbmodem1411";
     const char* file_desc = desc.c_str();
     serial_open(&tty, file_desc);
     ssize_t bytes_write;
@@ -53,11 +53,15 @@ int main(int, char**){
     int color[3] = {0, 0, 255};
     Point* center = new Point(0, 0);
 
+    bytes_write = serial_simple_write(&tty, 'm');
+
     //Timer
     std::clock_t start = std::clock();
 
     while(1){
         if(cap.read(frame1)){// get a new frame from camera
+            if ((((double) std::clock() - start)/1000) > 6000)
+                break;
             cv::flip(frame1, frame, 1);
             center->x = frame.cols/2;
             center->y = frame.rows/2;
@@ -91,8 +95,8 @@ int main(int, char**){
                 int pos_x = baricentre->x, pos_y = baricentre->y;
                 int diff_x = pos_x - center->x, diff_y = pos_y - center->y;
                 save_data(file, diff_x, diff_y, ((double) std::clock() - start)/1000);
-                printf("%f\n", (double) (std::clock() - start)/1000000);
-                printf("x: %d\ty: %d\n", pos_x - center->x, pos_y - center->y);
+                /*printf("%f\n", (double) (std::clock() - start)/1000000);
+                printf("x: %d\ty: %d\n", pos_x - center->x, pos_y - center->y);*/
                 if (diff_x > RADIUS)
                     bytes_write = serial_simple_write(&tty, 'q');
                 else if(diff_x < -RADIUS)

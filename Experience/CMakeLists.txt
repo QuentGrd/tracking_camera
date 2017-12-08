@@ -1,0 +1,5 @@
+cmake_minimum_required(VERSION 2.8)
+project( Tracking )
+find_package( OpenCV REQUIRED )
+add_executable( test test.cpp ../include/serial.o )
+target_link_libraries( test ${OpenCV_LIBS} )
