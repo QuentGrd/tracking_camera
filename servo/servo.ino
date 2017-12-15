@@ -6,7 +6,7 @@ Servo pan;
 const int SOFT_POT_PIN_PAN = A0; // pan
 const int SOFT_POT_PIN_TILT = A1; // tilt
 
-const int DEPL=3;
+const int DEPL=4;
 
 
 void setup(){
