@@ -28,7 +28,7 @@ int main(int, char**){
 	serial_com tty;
 
 	FILE* file = NULL;
-	file = fopen("result/xpmrad40sp3.txt", "w+");
+	file = fopen("result/xprad40sp4 (o).txt", "w+");
 
 	std::string desc = "/dev/cu.usbmodem1411";
 	const char* file_desc = desc.c_str();
@@ -62,10 +62,10 @@ int main(int, char**){
 
 	while(1){
 		if(cap.read(frame)){// get a new frame from camera
-			if (((((double) std::clock() - start)/1000) > 15000) && CHRONO)
+			if (((((double) std::clock() - start)/1000) > 6000) && CHRONO)
 				break;
-			cv::flip(frame, frame, 1);
-			//cv::GaussianBlur(frame, frame, Size(7, 7), 0, 0);
+			cv::flip(frame, frame1, 1);
+			cv::GaussianBlur(frame1, frame, Size(7, 7), 0, 0);
 
 			center->x = frame.cols/2;
 			center->y = frame.rows/2;
@@ -78,15 +78,14 @@ int main(int, char**){
 			for( it = frame.begin<Vec3b>(), end = frame.end<Vec3b>(); it != end; ++it){
 				float sum = (*mask_it)[0] + (*mask_it)[1] + (*mask_it)[2];
 				float norm = (*mask_it)[2]/sum;
-				//if (norm > 0.7){
-				if ((((*it)[2] - (*it)[0]) > TOLERANCE) && (((*it)[2] - (*it)[1]) > TOLERANCE)){
+				if (norm > 0.55){
 					(*mask_it)[0] = 255;
 					(*mask_it)[1] = 255;
 					(*mask_it)[2] = 255;
 
-					sum_x += (it).pos().x;
+					/*sum_x += (it).pos().x;
 					sum_y += (it).pos().y;
-					nb_pixel++;
+					nb_pixel++;*/
 				}
 				else{
 					(*mask_it)[0] = 0;
@@ -96,7 +95,7 @@ int main(int, char**){
 				++mask_it;
 			}
 
-			/*int erosion_size = 7;
+			int erosion_size = 5;
 			Mat element = getStructuringElement(MORPH_ELLIPSE, Size( 2*erosion_size + 1, 2*erosion_size+1 ), Point( erosion_size, erosion_size ));
 			erode(mask, mask, element);
 			erosion_size = 3;
@@ -109,7 +108,7 @@ int main(int, char**){
 					sum_y += (it).pos().y;
 					nb_pixel++;
 				}
-			}*/
+			}
 
 			if (DEBUGLINE){
 				//y-line
@@ -143,9 +142,9 @@ int main(int, char**){
 				int char_x, char_y;
 				char inst;
 				save_data(file, diff_x, diff_y, ((double) std::clock() - start)/1000);
-				printf("%f\n", (double) (std::clock() - start)/1000000);
-				printf("x: %d\ty: %d\n", pos_x - center->x, pos_y - center->y);
-				if (diff_x > RADIUS)
+				/*printf("%f\n", (double) (std::clock() - start)/1000000);
+				printf("x: %d\ty: %d\n", pos_x - center->x, pos_y - center->y);*/
+				/*if (diff_x > RADIUS)
 					bytes_write = serial_simple_write(&tty, 'q');
 				else if(diff_x < -RADIUS)
 					bytes_write = serial_simple_write(&tty, 'd');
@@ -154,9 +153,9 @@ int main(int, char**){
 				else if (diff_y < -RADIUS)
 					bytes_write = serial_simple_write(&tty, 'z');
 				else
-					bytes_write = serial_simple_write(&tty, ' ');
+					bytes_write = serial_simple_write(&tty, ' ');*/
 
-				/*if (pos_x <= 165)
+				if (pos_x <= 165)
 					char_x = 10;
 				else if (pos_x <= 248)
 					char_x = 20;
@@ -198,12 +197,12 @@ int main(int, char**){
 				printf("char_x: %d\tchar_y: %d\tchar: %d\t char: %c\n", char_x, char_y, char_x+char_y, inst);
 
 				if (char_x+char_y != 55)
-					bytes_write = serial_simple_write(&tty, inst);*/
+					bytes_write = serial_simple_write(&tty, inst);
 
 
 			}
-			/*else
-				bytes_write = serial_simple_write(&tty, ' ');*/
+			else
+				bytes_write = serial_simple_write(&tty, ' ');
 
 			imshow("ChatRoulette", mask);
 			imshow("BazooCam", frame);

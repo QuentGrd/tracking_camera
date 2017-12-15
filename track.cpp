@@ -23,7 +23,7 @@ int main(int, char**){
 	Vec3f pixel;
 	serial_com tty;
 
-	std::string file = "/dev/cu.usbmodem1421";
+	std::string file = "/dev/cu.usbmodem1411";
 	const char* file_desc = file.c_str();
 	serial_open(&tty, file_desc);
 	ssize_t bytes_write;
@@ -43,7 +43,7 @@ int main(int, char**){
 	cap.set(CV_CAP_PROP_FRAME_WIDTH, 640);  //taille de la fenetre
 	cap.set(CV_CAP_PROP_FRAME_HEIGHT,480); //au dela de 320*240
 
-	
+
 	MatIterator_<Vec3b> it, end, mask_it;
 	int color[3] = {0, 0, 255};
 	Point* center = new Point(0, 0);
